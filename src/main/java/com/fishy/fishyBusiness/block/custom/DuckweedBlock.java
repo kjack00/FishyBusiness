@@ -1,0 +1,128 @@
+package com.fishy.fishyBusiness.block.custom;
+
+import com.mojang.serialization.MapCodec;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+
+
+public class DuckweedBlock extends BushBlock implements BonemealableBlock{
+    public static final MapCodec<DuckweedBlock> CODEC = simpleCodec(DuckweedBlock::new);
+    protected static final VoxelShape AABB = Block.box((double)1.0F, (double)0.0F, (double)1.0F, (double)15.0F, (double)1.5F, (double)15.0F);
+    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+
+
+    public DuckweedBlock(Properties properties) {
+        super(properties);
+    }
+
+
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+        super.entityInside(state, level, pos, entity);
+        if (level instanceof ServerLevel && entity instanceof Boat) {
+            level.destroyBlock(new BlockPos(pos), true, entity);
+        }
+
+    }
+
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return AABB;
+    }
+
+    @Override
+    protected boolean mayPlaceOn(BlockState state, BlockGetter level, BlockPos pos) {
+        FluidState fluidstate = level.getFluidState(pos);
+        FluidState fluidstate1 = level.getFluidState(pos.above());
+        return (fluidstate.getType() == Fluids.WATER || state.getBlock() instanceof IceBlock) && fluidstate1.getType() == Fluids.EMPTY;
+    }
+
+    @Override
+    protected MapCodec<? extends BushBlock> codec() {
+        return CODEC;
+    }
+
+    @Override
+    public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
+        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FACING);
+    }
+
+    protected boolean place(LevelAccessor level, BlockPos pos, Direction direction) {
+        BlockState blockstate = this.defaultBlockState().setValue(FACING, direction);
+        return level.setBlock(pos, blockstate, 3);
+    }
+    @Override
+    public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, @NotNull BlockState state) {
+        return true;
+    }
+
+    @Override
+    public boolean isBonemealSuccess(@NotNull Level level, @NotNull RandomSource random, @NotNull BlockPos pos, @NotNull BlockState state) {
+        return true;
+    }
+
+    public boolean isValid(ServerLevel level, BlockPos pos, Direction direction) {
+        if (level.getBlockState(pos.relative(direction)).isAir() && level.getFluidState(pos.relative(direction).below()).getType() == Fluids.WATER){
+            return true;
+        }
+        return false;
+    }
+
+
+    @Override
+    public void performBonemeal(@NotNull ServerLevel level, RandomSource random, @NotNull BlockPos pos, @NotNull BlockState state) {
+        List<Direction> validDirections = new java.util.ArrayList<>(List.of());
+        BlockPos posToPlace = null;
+
+        if(isValid( level, pos, Direction.NORTH)){
+            validDirections.add(Direction.NORTH);
+        }
+        if (isValid( level, pos, Direction.EAST)){
+            validDirections.add(Direction.EAST);
+        }
+        if (isValid( level, pos, Direction.SOUTH)){
+            validDirections.add(Direction.SOUTH);
+        }
+        if (isValid( level, pos, Direction.WEST)){
+            validDirections.add(Direction.WEST);
+        }
+
+        if (validDirections.isEmpty()){
+            popResource(level, pos, new ItemStack(this));
+        }else {
+            posToPlace = new BlockPos(pos.relative((Direction) validDirections.get(random.nextIntBetweenInclusive(0, validDirections.size() - 1))));
+            this.place(level, posToPlace, Direction.Plane.HORIZONTAL.getRandomDirection(random));
+        }
+
+    }
+
+    @Override
+    public BonemealableBlock.Type getType() {
+        return BonemealableBlock.Type.GROWER;
+    }
+}

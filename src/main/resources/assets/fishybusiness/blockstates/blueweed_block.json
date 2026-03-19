@@ -1,0 +1,34 @@
+ {
+  "variants": {
+    "emissive=false,facing=north": {
+      "model": "fishybusiness:block/blueweed_block"
+    },
+  "emissive=false,facing=south": {
+    "model": "fishybusiness:block/blueweed_block",
+    "y": 180
+    },
+  "emissive=false,facing=east": {
+    "model": "fishybusiness:block/blueweed_block",
+    "y": 90
+    },
+  "emissive=false,facing=west": {
+    "model": "fishybusiness:block/blueweed_block",
+    "y": 270
+    },
+  "emissive=true,facing=north": {
+    "model": "fishybusiness:block/blueweed_block_night"
+    },
+  "emissive=true,facing=south": {
+    "model": "fishybusiness:block/blueweed_block_night",
+    "y": 180
+    },
+  "emissive=true,facing=east": {
+    "model": "fishybusiness:block/blueweed_block_night",
+    "y": 90
+    },
+  "emissive=true,facing=west": {
+    "model": "fishybusiness:block/blueweed_block_night",
+    "y": 270
+    }
+  }
+}

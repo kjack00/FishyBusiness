@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "fishybusiness:block/duckweed_block"
+    },
+    "facing=south": {
+      "model": "fishybusiness:block/duckweed_block",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "fishybusiness:block/duckweed_block",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "fishybusiness:block/duckweed_block",
+      "y": 270
+    }
+  }
+}
