@@ -1,5 +1,6 @@
 package com.fishy.fishyBusiness.block.custom;
 
+import com.fishy.fishyBusiness.block.custom.entity.ModBlockEntities;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -47,7 +48,7 @@ public static final MapCodec<MarkerBlock> CODEC = simpleCodec(MarkerBlock::new);
 
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return null;
+        return ModBlockEntities.MARKER_BE.get().create(pos, state);
     }
 
     @Override

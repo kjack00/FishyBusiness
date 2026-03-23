@@ -77,7 +77,7 @@ public class FishyBusiness {
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
-    @EventBusSubscriber(modid = FishyBusiness.MOD_ID, value = Dist.CLIENT)
+    @EventBusSubscriber(modid = FishyBusiness.MOD_ID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
     static class ClientModEvents {
         @SubscribeEvent
         static void onClientSetup(FMLClientSetupEvent event) {
