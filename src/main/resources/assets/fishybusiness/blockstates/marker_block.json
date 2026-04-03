@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "FACING=up": {
+    },
+    "FACING=down": {
+    },
+    "FACING=north": {
+    },
+    "FACING=south": {
+    },
+    "FACING=east": {
+    },
+    "FACING=west": {
+    }
+  }
+}

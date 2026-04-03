@@ -1,9 +1,11 @@
 package com.fishy.fishyBusiness;
 
 import com.fishy.fishyBusiness.block.ModBlocks;
+import com.fishy.fishyBusiness.block.custom.entity.MarkerBlockEntity;
 import com.fishy.fishyBusiness.block.custom.entity.ModBlockEntities;
 import com.fishy.fishyBusiness.block.custom.entity.renderer.MarkerBER;
 import com.fishy.fishyBusiness.item.ModItems;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -66,6 +68,7 @@ public class FishyBusiness {
             event.accept(ModBlocks.REDWEED_BLOCK);
             event.accept(ModBlocks.BLUEWEED_BLOCK);
             event.accept(ModBlocks.MARKER_BLOCK);
+            event.accept(ModItems.MARKER);
         }
 
     }
@@ -77,7 +80,7 @@ public class FishyBusiness {
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
-    @EventBusSubscriber(modid = FishyBusiness.MOD_ID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
+    @EventBusSubscriber(modid = FishyBusiness.MOD_ID, value = Dist.CLIENT)
     static class ClientModEvents {
         @SubscribeEvent
         static void onClientSetup(FMLClientSetupEvent event) {

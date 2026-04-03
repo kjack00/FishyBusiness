@@ -17,13 +17,13 @@ public class MarkerBlockEntity extends BlockEntity{
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
-        //tag.put("posList", poslist.serialiseNBT(registries));
+        tag.put("colMap", poslist.serialiseNBT(registries));
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        //posList.deserialiseNBT(registries, tag.getCompound("posList"));
+        posList.deserialiseNBT(registries, tag.getCompound("colMap"));
     }
 
 }

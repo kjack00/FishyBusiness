@@ -1,5 +1,6 @@
 {
   "block.fishybusiness.duckweed_block": "Duckweed",
   "block.fishybusiness.redweed_block": "Redweed",
-  "block.fishybusiness.blueweed_block": "Blueweed"
+  "block.fishybusiness.blueweed_block": "Blueweed",
+  "item.fishybusiness.marker": "Marker"
 }
