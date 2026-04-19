@@ -1,6 +1,7 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "fishybusiness:item/marker"
+    "layer1": "fishybusiness:item/markeroverlay",
+    "layer0": "fishybusiness:item/markerunderlay"
   }
 }

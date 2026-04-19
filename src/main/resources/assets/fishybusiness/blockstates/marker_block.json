@@ -1,16 +1,16 @@
 {
   "variants": {
-    "FACING=up": {
-    },
-    "FACING=down": {
-    },
-    "FACING=north": {
-    },
-    "FACING=south": {
-    },
-    "FACING=east": {
-    },
-    "FACING=west": {
-    }
+    "face=floor,facing=north": { "model": "fishybusiness:block/marker_block" },
+    "face=floor,facing=east":  { "model": "fishybusiness:block/marker_block", "y": 90 },
+    "face=floor,facing=south": { "model": "fishybusiness:block/marker_block", "y": 180 },
+    "face=floor,facing=west":  { "model": "fishybusiness:block/marker_block", "y": 270 },
+    "face=wall,facing=north":  { "model": "fishybusiness:block/marker_block", "x": 90 },
+    "face=wall,facing=east":   { "model": "fishybusiness:block/marker_block", "x": 90, "y": 90 },
+    "face=wall,facing=south":  { "model": "fishybusiness:block/marker_block", "x": 90, "y": 180 },
+    "face=wall,facing=west":   { "model": "fishybusiness:block/marker_block", "x": 90, "y": 270 },
+    "face=ceiling,facing=north": { "model": "fishybusiness:block/marker_block", "x": 180 },
+    "face=ceiling,facing=east":  { "model": "fishybusiness:block/marker_block", "x": 180, "y": 90 },
+    "face=ceiling,facing=south": { "model": "fishybusiness:block/marker_block", "x": 180, "y": 180 },
+    "face=ceiling,facing=west":  { "model": "fishybusiness:block/marker_block", "x": 180, "y": 270 }
   }
 }

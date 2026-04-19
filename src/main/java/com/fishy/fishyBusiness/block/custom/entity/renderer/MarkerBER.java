@@ -1,5 +1,6 @@
 package com.fishy.fishyBusiness.block.custom.entity.renderer;
 
+import com.fishy.fishyBusiness.block.custom.MarkerBlock;
 import com.fishy.fishyBusiness.block.custom.entity.MarkerBlockEntity;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -11,9 +12,15 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.FaceAttachedHorizontalDirectionalBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Quaternionf;
 
 import java.util.Map;
 
@@ -23,53 +30,46 @@ public class MarkerBER implements BlockEntityRenderer<MarkerBlockEntity> {
     public MarkerBER(BlockEntityRendererProvider.Context context) {
     }
 
-    public NativeImage customTexture = new NativeImage(16, 16,true);
-    public DynamicTexture dynamicTexture = new DynamicTexture(this.customTexture);
-
-
-    public void drawPx(int x, int y, int col){
-        this.customTexture.setPixelRGBA(x, y, col);
-        this.dynamicTexture.upload();
-    }
-
-    public Map<Vec2, Integer> getPx(){
-        Map<Vec2, Integer> colorMap = null;
-        for(int x = 0; x < 15; x++){
-            for(int y = 0; y < 15; y++) {
-                int col = this.customTexture.getPixelRGBA(x, y);
-                colorMap.put(new Vec2(x, y), col);
-            }
-        }
-        return colorMap;
-    }
-
-    public void drawMapPx(Map<Vec2, Integer> colorMap){
-        for(int x = 0; x < 15; x++){
-            for(int y = 0; y < 15; y++) {
-                int col = colorMap.get(new Vec2(x, y));
-                drawPx(x, y, col);
-            }
-        }
-    }
-
-
-
-
-
-    public ResourceLocation TextureLocation = Minecraft.getInstance().getTextureManager().register("marker_ber_tex", this.dynamicTexture);
-
-    //public void saveTexture(){
-    //    this.TextureLocation.
-    //}
-
     float scale = 1.0f;
     float yOffset = 0.0001f;
 
     @Override
     public void render(@NotNull MarkerBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        VertexConsumer builder = bufferSource.getBuffer(RenderType.entityCutout(this.TextureLocation));
-        System.out.println(this);
-        drawQuad(builder, poseStack, 0f, 0 + yOffset, 0f, 1 * scale, 0 * scale + yOffset , 1 * scale, 0f, 0f, 1f, 1f, packedLight,1);
+        ResourceLocation texture = blockEntity.getTextureLocation();
+        VertexConsumer builder = bufferSource.getBuffer(RenderType.entityTranslucent(texture));
+        if(blockEntity.getBlockState().getValue(FaceAttachedHorizontalDirectionalBlock.FACE) == AttachFace.FLOOR) {
+            yOffset = 0.0001f;
+            drawQuad(builder, poseStack, 0f, 0 + yOffset, 0f, 1 * scale, 0 * scale + yOffset , 1 * scale, 0f, 0f, 1f, 1f, packedLight,1);
+        } else if (blockEntity.getBlockState().getValue(FaceAttachedHorizontalDirectionalBlock.FACE) == AttachFace.CEILING) {
+            yOffset = 0.9999f;
+            drawQuad(builder, poseStack, 0f, 0 + yOffset, 0f, 1 * scale, 0 * scale + yOffset , 1 * scale, 0f, 0f, 1f, 1f, packedLight,1);
+        } else if (blockEntity.getBlockState().getValue(FaceAttachedHorizontalDirectionalBlock.FACE) == AttachFace.WALL) {
+            yOffset = 0f;
+            if(blockEntity.getBlockState().getValue(FaceAttachedHorizontalDirectionalBlock.FACING) == Direction.NORTH ||
+            blockEntity.getBlockState().getValue(FaceAttachedHorizontalDirectionalBlock.FACING) == Direction.UP ||
+            blockEntity.getBlockState().getValue(FaceAttachedHorizontalDirectionalBlock.FACING) == Direction.DOWN){
+
+                drawQuad(builder, poseStack, 0f, 0 + yOffset, 0.9999f, 1 * scale, 1 * scale + yOffset , 0.9999f * scale, 0f, 0f, 1f, 1f, packedLight,1);
+            }else if(blockEntity.getBlockState().getValue(FaceAttachedHorizontalDirectionalBlock.FACING) == Direction.EAST){
+
+                drawVertex(builder, poseStack, 0.0001f, 0f, 0f, 0f, 0f, packedLight, 1, 1, 1, 1);
+                drawVertex(builder, poseStack, 0.0001f, 1f, 0f, 0f, 1f, packedLight, 1, 1, 1, 1);
+                drawVertex(builder, poseStack, 0.0001f, 1f, 1f, 1f, 1f, packedLight, 1, 1, 1, 1);
+                drawVertex(builder, poseStack, 0.0001f, 0f, 1f, 1f, 0f, packedLight, 1, 1, 1, 1); //i am lazy
+            }else if(blockEntity.getBlockState().getValue(FaceAttachedHorizontalDirectionalBlock.FACING) == Direction.SOUTH){
+
+                drawQuad(builder, poseStack, 0f, 0 + yOffset, 0.0001f, 1 * scale, 1 * scale + yOffset , 0.0001f * scale, 0f, 0f, 1f, 1f, packedLight,1);
+            }else if(blockEntity.getBlockState().getValue(FaceAttachedHorizontalDirectionalBlock.FACING) == Direction.WEST){
+
+
+                drawVertex(builder, poseStack, 0.9999f, 0f, 0f, 0f, 0f, packedLight, 1, 1, 1, 1);
+                drawVertex(builder, poseStack, 0.9999f, 0f, 1f, 1f, 0f, packedLight, 1, 1, 1, 1);
+                drawVertex(builder, poseStack, 0.9999f, 1f, 1f, 1f, 1f, packedLight, 1, 1, 1, 1);
+                drawVertex(builder, poseStack, 0.9999f, 1f, 0f, 0f, 1f, packedLight, 1, 1, 1, 1); //i am lazy here too
+            }
+        }
+
+
     }
 
     private static void drawVertex(VertexConsumer builder, PoseStack poseStack, float x, float y, float z, float u, float v, int packedLight, float red, float green, float blue, float alpha){

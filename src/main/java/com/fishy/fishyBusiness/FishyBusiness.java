@@ -1,14 +1,18 @@
 package com.fishy.fishyBusiness;
 
 import com.fishy.fishyBusiness.block.ModBlocks;
-import com.fishy.fishyBusiness.block.custom.entity.MarkerBlockEntity;
 import com.fishy.fishyBusiness.block.custom.entity.ModBlockEntities;
 import com.fishy.fishyBusiness.block.custom.entity.renderer.MarkerBER;
+import com.fishy.fishyBusiness.client.ColorHandlers;
+import com.fishy.fishyBusiness.components.ModDataComponents;
+import com.fishy.fishyBusiness.recipe.ModRecipes;
 import com.fishy.fishyBusiness.item.ModItems;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import org.slf4j.Logger;
 
@@ -25,6 +29,8 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+
+import static com.fishy.fishyBusiness.item.custom.MarkerItem.setMarkerColor;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(FishyBusiness.MOD_ID)
@@ -47,6 +53,10 @@ public class FishyBusiness {
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
         ModBlockEntities.register(modEventBus);
+        ModDataComponents.register(modEventBus);
+        modEventBus.addListener(ColorHandlers::registerItemColor);
+        ModRecipes.SERIALIZERS.register(modEventBus);
+
 
 
         // Register the item to a creative tab
@@ -68,7 +78,12 @@ public class FishyBusiness {
             event.accept(ModBlocks.REDWEED_BLOCK);
             event.accept(ModBlocks.BLUEWEED_BLOCK);
             event.accept(ModBlocks.MARKER_BLOCK);
-            event.accept(ModItems.MARKER);
+
+            for (DyeColor color : DyeColor.values()){
+                ItemStack itemStack = new ItemStack((ItemLike) ModItems.MARKER);
+                setMarkerColor(itemStack, color.getTextColor());
+                event.accept(itemStack);
+            }
         }
 
     }
@@ -101,6 +116,7 @@ public class FishyBusiness {
             });
 
         }
+
 
         @SubscribeEvent
         public static void registerBER(EntityRenderersEvent.RegisterRenderers event){
