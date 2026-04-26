@@ -80,5 +80,30 @@ public class MarkerBlockEntity extends BlockEntity{
         this.updateTexture();
         this.setChanged();
     }
+
+    public boolean checkColor(){
+        for(int x = 0; x < 15; x++){
+            for(int y = 0; y < 15; y++) {
+                if(this.nativeImage.getPixelRGBA(x, y) != 0 || this.nativeImage.getPixelRGBA(x, y) != 0x00000000) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    int decay = 0;
+
+    public int getDecay(){
+        return this.decay;
+    }
+
+    public void addDecay(int inc){
+        this.decay += inc;
+    }
+
+    public void setDecay(int decay) {
+        this.decay = decay;
+    }
 }
 

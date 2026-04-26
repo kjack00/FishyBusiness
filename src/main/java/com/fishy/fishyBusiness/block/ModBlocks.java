@@ -38,7 +38,7 @@ public class ModBlocks {
                     BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).instabreak().sound(SoundType.LILY_PAD).noOcclusion().pushReaction(PushReaction.DESTROY).noCollission()));
 
     public static final  DeferredBlock<Block> MARKER_BLOCK = registerBlock("marker_block",
-            () -> new MarkerBlock(BlockBehaviour.Properties.of().noOcclusion().noCollission().noLootTable().replaceable()));
+            () -> new MarkerBlock(BlockBehaviour.Properties.of().noOcclusion().noCollission().noLootTable().replaceable().noTerrainParticles().randomTicks()));
 
 
 

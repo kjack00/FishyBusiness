@@ -110,7 +110,7 @@ public class RecolorMarkerRecipe extends CustomRecipe {
         int l3 = FastColor.ARGB32.color(0, l2, i3, k3);
         boolean flag = dyeditemcolor == 0;
 
-        int finalColor = FastColor.ARGB32.color(255, k3, i3, l2);
+        int finalColor = FastColor.ARGB32.color(255, (k3 + j1) / 2, (i3 + k1) / 2, (l2 + l1) / 2);
         itemstack.set(ModDataComponents.COLOR, finalColor);
         return itemstack;
 

@@ -1,29 +1,27 @@
 package com.fishy.fishyBusiness.item.custom;
 
 import com.fishy.fishyBusiness.block.ModBlocks;
+import com.fishy.fishyBusiness.block.custom.MarkerBlock;
 import com.fishy.fishyBusiness.block.custom.entity.MarkerBlockEntity;
-import com.fishy.fishyBusiness.block.custom.entity.renderer.MarkerBER;
 import com.fishy.fishyBusiness.components.ModDataComponents;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ButtonBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.AttachFace;
 
 import java.util.List;
 
@@ -47,6 +45,22 @@ public class MarkerItem extends Item {
 
         }else if(face == Direction.EAST || face == Direction.WEST){
             markerBlockEntity.drawPx((int) z, (int) y, col);
+
+        }
+    }
+    private static void placeLogic(Level level, BlockPos pos, Direction face, UseOnContext context){
+        BlockPos placePos = pos.relative(face);
+        BlockState blockState = null;
+        if(level.getBlockState(placePos).getBlock()   == Blocks.AIR){
+            if(face != Direction.UP && face != Direction.DOWN) {
+                 blockState = ModBlocks.MARKER_BLOCK.get().defaultBlockState().setValue(ButtonBlock.FACING, face);
+            }else if(face == Direction.DOWN){
+                 blockState = ModBlocks.MARKER_BLOCK.get().defaultBlockState().setValue(ButtonBlock.FACE, AttachFace.CEILING);
+            }else{
+                 blockState = ModBlocks.MARKER_BLOCK.get().defaultBlockState().setValue(ButtonBlock.FACE, AttachFace.FLOOR);
+            }
+
+            level.setBlock(pos.relative(face), blockState, 3);
 
         }
     }
@@ -121,6 +135,8 @@ public class MarkerItem extends Item {
             //System.out.println(x + "," + z);
 
 
+        } else{
+            placeLogic(level,  context.getClickedPos(), context.getClickedFace(), context);
         }
         return super.useOn(context);
     }

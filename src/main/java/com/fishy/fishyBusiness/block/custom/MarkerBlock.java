@@ -1,14 +1,16 @@
 package com.fishy.fishyBusiness.block.custom;
 
+import com.fishy.fishyBusiness.block.custom.entity.MarkerBlockEntity;
 import com.fishy.fishyBusiness.block.custom.entity.ModBlockEntities;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
@@ -30,7 +32,6 @@ public class MarkerBlock extends FaceAttachedHorizontalDirectionalBlock implemen
     protected static final VoxelShape WALL_SHAPE_EAST = Block.box(0, 0, 0, 0.0001, 16, 16);
     protected static final VoxelShape WALL_SHAPE_SOUTH = Block.box(0, 0, 0, 16, 16, 0.0001);
     protected static final VoxelShape WALL_SHAPE_WEST = Block.box(15.9999, 0, 0, 16, 16, 16);
-
 
 public static final MapCodec<MarkerBlock> CODEC = simpleCodec(MarkerBlock::new);
 
@@ -72,6 +73,25 @@ public static final MapCodec<MarkerBlock> CODEC = simpleCodec(MarkerBlock::new);
         return CODEC;
     }
 
+    @Override
+    protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        MarkerBlockEntity markerBlockEntity = (MarkerBlockEntity) level.getBlockEntity(pos);
+        assert markerBlockEntity != null;
+        int ranTick = markerBlockEntity.getDecay();
+        if(!markerBlockEntity.checkColor()){
+            System.out.println(ranTick);
+            if(ranTick >= 5){
+                this.asBlock().destroy(level, pos, state);
+                //level.setBlock(pos, Blocks.RED_CONCRETE.defaultBlockState(),3); debug
+            }else{
+                markerBlockEntity.addDecay(1);
+            }
+        }else{
+            markerBlockEntity.setDecay(0);
+        }
+
+        super.randomTick(state, level, pos, random);
+    }
 
     //Block entity junk
 
